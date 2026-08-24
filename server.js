@@ -6,7 +6,7 @@ const db = require("./database");
 const rss = require("./rss");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const storage = multer.diskStorage({
 destination: function (req, file, cb) {
@@ -29,7 +29,6 @@ limits: {
 },
 
 fileFilter: function (req, file, cb) {
-
     const allowed = [
         "image/jpeg",
         "image/png",
@@ -54,25 +53,26 @@ path.join(__dirname, "public")
 )
 );
 
-// =======================================
-// ВСІ НОВИНИ
-// =======================================
+app.get("/", function (req, res) {
+res.sendFile(
+path.join(
+__dirname,
+"public",
+"index.html"
+)
+);
+});
 
 app.get("/api/news", function (req, res) {
-
 const news = db
-    .prepare(
-        "SELECT * FROM news ORDER BY created_at DESC"
-    )
-    .all();
+.prepare(
+"SELECT * FROM news ORDER BY created_at DESC"
+)
+.all();
 
 res.json(news);
 
 });
-
-// =======================================
-// ДОДАТИ НОВИНУ
-// =======================================
 
 app.post(
 "/api/news",
@@ -84,7 +84,6 @@ function (req, res) {
     const text = req.body.text;
 
     if (!title || !category || !text) {
-
         return res.status(400).json({
             error: "Заповніть усі поля"
         });
@@ -118,10 +117,6 @@ function (req, res) {
 
 );
 
-// =======================================
-// РЕДАГУВАТИ НОВИНУ
-// =======================================
-
 app.put(
 "/api/news/",
 upload.single("image"),
@@ -134,7 +129,6 @@ function (req, res) {
     const text = req.body.text;
 
     if (!title || !category || !text) {
-
         return res.status(400).json({
             error: "Заповніть усі поля"
         });
@@ -147,7 +141,6 @@ function (req, res) {
         .get(id);
 
     if (!oldNews) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -180,10 +173,6 @@ function (req, res) {
 
 );
 
-// =======================================
-// ЗРОБИТИ ГОЛОВНОЮ
-// =======================================
-
 app.put(
 "/api/news//featured",
 function (req, res) {
@@ -197,7 +186,6 @@ function (req, res) {
         .get(id);
 
     if (!news) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -222,10 +210,6 @@ function (req, res) {
 
 );
 
-// =======================================
-// ПРИБРАТИ З ГОЛОВНОЇ
-// =======================================
-
 app.delete(
 "/api/news//featured",
 function (req, res) {
@@ -239,7 +223,6 @@ function (req, res) {
         .get(id);
 
     if (!news) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -256,10 +239,6 @@ function (req, res) {
 
 );
 
-// =======================================
-// ВИДАЛИТИ НОВИНУ
-// =======================================
-
 app.delete(
 "/api/news/",
 function (req, res) {
@@ -273,7 +252,6 @@ function (req, res) {
         .run(id);
 
     if (result.changes === 0) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -286,32 +264,27 @@ function (req, res) {
 
 );
 
-// =======================================
-// ПОМИЛКИ
-// =======================================
-
 app.use(
 function (err, req, res, next) {
 
     console.error(err);
 
     res.status(400).json({
-        error: err.message || "Помилка сервера"
+        error:
+            err.message ||
+            "Помилка сервера"
     });
 }
 
 );
-
-// =======================================
-// ЗАПУСК
-// =======================================
 
 app.listen(
 PORT,
 function () {
 
     console.log(
-        "НОВИНИ UA запущено: http://localhost:" + PORT
+        "НОВИНИ UA запущено: http://localhost:" +
+        PORT
     );
 
     rss.startRSS();
