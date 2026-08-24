@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Вхід — НОВИНИ UA</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f7fa;
+
+            color: #101828;
+        }
+
+
+        .login-box {
+
+            width: 100%;
+
+            max-width: 400px;
+
+            background: white;
+
+            border:
+                1px solid #e4e7ec;
+
+            border-radius: 14px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(16, 24, 40, 0.08);
+        }
+
+
+        .logo {
+
+            text-align: center;
+
+            font-size: 28px;
+
+            font-weight: 900;
+
+            margin-bottom: 8px;
+        }
+
+
+        .logo span {
+
+            color: #4f8cff;
+        }
+
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #667085;
+
+            font-size: 14px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 18px;
+        }
+
+
+        label {
+
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border:
+                1px solid #d0d5dd;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+
+        input:focus {
+
+            border-color: #0757d5;
+        }
+
+
+        button {
+
+            width: 100%;
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 13px;
+
+            background: #0757d5;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        button:hover {
+
+            background: #0648b5;
+        }
+
+
+        .error {
+
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            background: #fee4e2;
+
+            color: #b42318;
+
+            font-size: 13px;
+
+            text-align: center;
+
+            font-weight: 700;
+        }
+
+
+        .back {
+
+            display: block;
+
+            margin-top: 20px;
+
+            text-align: center;
+
+            color: #667085;
+
+            text-decoration: none;
+
+            font-size: 13px;
+        }
+
+
+        .back:hover {
+
+            color: #0757d5;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+
+    <div class="logo">
+
+        НОВИНИ <span>UA</span>
+
+    </div>
+
+
+    <div class="subtitle">
+
+        Вхід до адміністративної панелі
+
+    </div>
+
+
+    <form id="loginForm">
+
+
+        <div class="form-group">
+
+            <label>
+                Логін
+            </label>
+
+            <input
+                id="login"
+                type="text"
+                autocomplete="username"
+                required
+                placeholder="Введіть логін">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Пароль
+            </label>
+
+            <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                placeholder="Введіть пароль">
+
+        </div>
+
+
+        <button type="submit">
+
+            Увійти
+
+        </button>
+
+
+        <div
+            class="error"
+            id="error">
+
+        </div>
+
+
+    </form>
+
+
+    <a
+        class="back"
+        href="/">
+
+        ← Повернутися на сайт
+
+    </a>
+
+
+</div>
+
+
+
+<script>
+
+
+const form =
+    document.getElementById(
+        "loginForm"
+    );
+
+
+const error =
+    document.getElementById(
+        "error"
+    );
+
+
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+
+        event.preventDefault();
+
+
+        error.style.display =
+            "none";
+
+
+        const login =
+            document
+                .getElementById("login")
+                .value;
+
+
+        const password =
+            document
+                .getElementById("password")
+                .value;
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "/api/login",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            login:
+                                login,
+
+                            password:
+                                password
+
+                        })
+
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                error.textContent =
+                    result.error ||
+                    "Помилка входу";
+
+                error.style.display =
+                    "block";
+
+                return;
+
+            }
+
+
+            window.location.href =
+                "/admin";
+
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+            error.textContent =
+                "Не вдалося з'єднатися із сервером";
+
+            error.style.display =
+                "block";
+
+        }
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+
+<html lang="uk">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>НОВИНИ UA — Новина</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fa;
+    color: #101828;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #101828;
+    color: white;
+    padding: 18px 20px;
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.logo span {
+    color: #4f8cff;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+
+/* =========================
+   BACK
+========================= */
+
+.back-button {
+    display: inline-block;
+
+    margin-bottom: 25px;
+
+    color: #0757d5;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+.back-button:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   ARTICLE
+========================= */
+
+.article {
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 8px 25px
+        rgba(16, 24, 40, 0.06);
+}
+
+
+/* =========================
+   PHOTO
+========================= */
+
+.article-image {
+    width: 100%;
+
+    max-height: 500px;
+
+    object-fit: cover;
+
+    display: block;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dbeafe,
+            #eff6ff
+        );
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.article-content {
+    padding: 40px;
+}
+
+.category {
+    display: inline-block;
+
+    background: #e0edff;
+
+    color: #0757d5;
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    margin-bottom: 15px;
+}
+
+.article h1 {
+    font-size: 42px;
+
+    line-height: 1.15;
+
+    margin-bottom: 15px;
+}
+
+.date {
+    color: #98a2b3;
+
+    font-size: 13px;
+
+    margin-bottom: 30px;
+}
+
+.article-text {
+    color: #344054;
+
+    font-size: 18px;
+
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+}
+
+
+/* =========================
+   ERROR / LOADING
+========================= */
+
+.message {
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 12px;
+
+    padding: 40px;
+
+    text-align: center;
+
+    color: #667085;
+
+    font-size: 16px;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    margin-top: 60px;
+
+    background: #101828;
+
+    color: white;
+
+    padding: 30px 20px;
+}
+
+.footer-inner {
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+footer p {
+    color: #98a2b3;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .header-inner {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 12px;
+    }
+
+    .container {
+        margin-top: 25px;
+    }
+
+    .article-content {
+        padding: 25px;
+    }
+
+    .article h1 {
+        font-size: 30px;
+    }
+
+    .article-text {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .article-image {
+        max-height: 300px;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="header-inner">
+
+<div class="logo">
+
+НОВИНИ <span>UA</span>
+
+</div>
+
+<nav>
+
+<a href="/">
+Головна
+</a>
+
+<a href="/admin">
+Адмінка
+</a>
+
+</nav>
+
+</div>
+
+</header>
+
+<main class="container">
+
+<a
+href="/"
+class="back-button">
+
+← Повернутися до новин
+
+</a>
+
+<div id="articleContainer">
+
+<div class="message">
+
+Завантаження новини...
+
+</div>
+
+</div>
+
+</main>
+
+<footer>
+
+<div class="footer-inner">
+
+<strong>
+НОВИНИ UA
+</strong>
+
+<p>
+Новинний сайт України.
+</p>
+
+</div>
+
+</footer>
+
+<script>
+
+
+// =======================================
+// ОТРИМУЄМО ID НОВИНИ
+// =======================================
+
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+
+const newsId =
+params.get("id");
+
+
+
+const articleContainer =
+document.getElementById(
+"articleContainer"
+);
+
+
+
+// =======================================
+// ЯКЩО ID НЕМАЄ
+// =======================================
+
+if (!newsId) {
+
+articleContainer.innerHTML = `
+
+<div class="message">
+
+Новину не знайдено.
+
+<br><br>
+
+<a
+href="/"
+class="back-button">
+
+← На головну
+
+</a>
+
+</div>
+
+`;
+
+}
+
+
+
+// =======================================
+// ЗАВАНТАЖЕННЯ НОВИНИ
+// =======================================
+
+else {
+
+loadNews();
+
+}
+
+
+
+async function loadNews() {
+
+try {
+
+
+const response =
+await fetch("/api/news");
+
+
+if (!response.ok) {
+
+throw new Error(
+"Помилка завантаження"
+);
+
+}
+
+
+const news =
+await response.json();
+
+
+const item =
+news.find(
+article =>
+String(article.id) ===
+String(newsId)
+);
+
+
+
+if (!item) {
+
+articleContainer.innerHTML = `
+
+<div class="message">
+
+<h2>
+Новину не знайдено
+</h2>
+
+<br>
+
+<a
+href="/"
+class="back-button">
+
+← Повернутися на головну
+
+</a>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+// =======================================
+// ФОТО
+// =======================================
+
+const image =
+item.image
+
+? `
+
+<img
+class="article-image"
+src="${item.image}"
+alt="${item.title}">
+
+`
+
+: "";
+
+
+
+// =======================================
+// ВИВОДИМО НОВИНУ
+// =======================================
+
+articleContainer.innerHTML = `
+
+<article class="article">
+
+${image}
+
+<div class="article-content">
+
+
+<span class="category">
+
+${item.category}
+
+</span>
+
+
+<h1>
+
+${item.title}
+
+</h1>
+
+
+<div class="date">
+
+Опубліковано:
+${item.created_at}
+
+</div>
+
+
+<div class="article-text">
+
+${item.text}
+
+</div>
+
+
+</div>
+
+</article>
+
+`;
+
+
+
+// =======================================
+// TITLE БРАУЗЕРА
+// =======================================
+
+document.title =
+item.title +
+" — НОВИНИ UA";
+
+
+}
+
+catch (error) {
+
+console.error(error);
+
+
+articleContainer.innerHTML = `
+
+<div class="message">
+
+Не вдалося завантажити новину.
+
+<br><br>
+
+<a
+href="/"
+class="back-button">
+
+← Повернутися на головну
+
+</a>
+
+</div>
+
+`;
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
