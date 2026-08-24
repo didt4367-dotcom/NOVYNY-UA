@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+<html lang="uk">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>НОВИНИ UA — Головні новини України</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fa;
+    color: #101828;
+}
+
+header {
+    background: #101828;
+    color: white;
+    padding: 18px 20px;
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.logo span {
+    color: #4f8cff;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.hero {
+    background: white;
+    border-bottom: 1px solid #e4e7ec;
+}
+
+.hero-inner {
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #667085;
+    font-size: 17px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 0 20px;
+}
+
+.search-box {
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 15px 18px;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    background: white;
+    font-size: 15px;
+    outline: none;
+}
+
+.categories {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.category-button {
+    border: 1px solid #d0d5dd;
+    background: white;
+    color: #344054;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.category-button:hover {
+    border-color: #0757d5;
+    color: #0757d5;
+}
+
+.category-button.active {
+    background: #0757d5;
+    color: white;
+    border-color: #0757d5;
+}
+
+/* =========================
+   ГОЛОВНА НОВИНА
+========================= */
+
+.featured-section {
+    margin-bottom: 40px;
+}
+
+.featured-title {
+    font-size: 28px;
+    margin-bottom: 18px;
+}
+
+.featured-card {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(16, 24, 40, 0.08);
+}
+
+.featured-image {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
+}
+
+.featured-content {
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.featured-badge {
+    display: inline-block;
+    width: fit-content;
+    background: #fff3cd;
+    color: #8a6500;
+    padding: 7px 11px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.featured-category {
+    display: inline-block;
+    width: fit-content;
+    background: #e0edff;
+    color: #0757d5;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.featured-content h2 {
+    font-size: 30px;
+    line-height: 1.2;
+    margin-bottom: 14px;
+}
+
+.featured-content p {
+    color: #667085;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.featured-date {
+    color: #98a2b3;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.read-more {
+    display: inline-block;
+    width: fit-content;
+    padding: 10px 15px;
+    background: #0757d5;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.read-more:hover {
+    background: #0648b5;
+}
+
+/* =========================
+   ВСІ НОВИНИ
+========================= */
+
+.section-title {
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    font-size: 28px;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.news-card {
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.news-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(16, 24, 40, 0.08);
+}
+
+.news-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    object-fit: cover;
+    display: block;
+}
+
+.news-content {
+    padding: 20px;
+}
+
+.category-text {
+    display: inline-block;
+    background: #e0edff;
+    color: #0757d5;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.news-content h3 {
+    font-size: 20px;
+    line-height: 1.3;
+    margin-bottom: 10px;
+}
+
+.news-content p {
+    color: #667085;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-date {
+    color: #98a2b3;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    color: #667085;
+}
+
+footer {
+    margin-top: 60px;
+    background: #101828;
+    color: white;
+    padding: 30px 20px;
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+footer p {
+    color: #98a2b3;
+    font-size: 13px;
+}
+
+@media (max-width: 850px) {
+
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .featured-card {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-image {
+        height: 280px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    nav {
+        gap: 15px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-content {
+        padding: 25px;
+    }
+
+    .featured-content h2 {
+        font-size: 24px;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="header-inner">
+
+<div class="logo">
+НОВИНИ <span>UA</span>
+</div>
+
+<nav>
+
+<a href="/">
+Головна
+</a>
+
+<a href="/admin">
+Адмінка
+</a>
+
+</nav>
+
+</div>
+
+</header>
+
+<section class="hero">
+
+<div class="hero-inner">
+
+<h1>
+Останні новини України
+</h1>
+
+<p>
+Головні події України та світу в одному місці.
+</p>
+
+</div>
+
+</section>
+
+<main class="container">
+
+<div class="search-box">
+
+<input
+id="searchInput"
+type="search"
+placeholder="🔎 Пошук новин..."
+
+>
+
+</div>
+
+<div
+class="categories"
+id="categories">
+
+<button
+class="category-button active"
+data-category="all">
+Всі </button>
+
+<button class="category-button" data-category="Україна">
+Україна
+</button>
+
+<button class="category-button" data-category="Війна">
+Війна
+</button>
+
+<button class="category-button" data-category="Політика">
+Політика
+</button>
+
+<button class="category-button" data-category="Економіка">
+Економіка
+</button>
+
+<button class="category-button" data-category="Світ">
+Світ
+</button>
+
+<button class="category-button" data-category="Регіони">
+Регіони
+</button>
+
+<button class="category-button" data-category="Спорт">
+Спорт
+</button>
+
+<button class="category-button" data-category="Технології">
+Технології
+</button>
+
+</div>
+
+<section
+class="featured-section"
+id="featuredSection"
+style="display:none;">
+
+<h2 class="featured-title">
+⭐ Головна новина
+</h2>
+
+<div id="featuredNews"></div>
+
+</section>
+
+<div class="section-title">
+
+<h2>
+📰 Останні новини
+</h2>
+
+</div>
+
+<div
+class="news-grid"
+id="newsGrid">
+</div>
+
+</main>
+
+<footer>
+
+<div class="footer-inner">
+
+<strong>
+НОВИНИ UA
+</strong>
+
+<p>
+Новинний сайт України.
+</p>
+
+</div>
+
+</footer>
+
+<script>
+
+let allNews = [];
+
+let selectedCategory = "all";
+
+
+async function loadNews() {
+
+const newsGrid =
+document.getElementById("newsGrid");
+
+try {
+
+const response =
+await fetch("/api/news");
+
+allNews =
+await response.json();
+
+renderNews();
+
+}
+
+catch (error) {
+
+console.error(error);
+
+newsGrid.innerHTML = `
+
+<div class="empty">
+
+Не вдалося завантажити новини.
+
+</div>
+
+`;
+
+}
+
+}
+
+
+function renderFeatured(news) {
+
+const section =
+document.getElementById("featuredSection");
+
+const container =
+document.getElementById("featuredNews");
+
+const featured =
+news.find(
+item => Number(item.featured) === 1
+);
+
+if (!featured) {
+
+section.style.display = "none";
+
+return;
+
+}
+
+section.style.display = "block";
+
+
+const image =
+featured.image
+
+? `
+
+<img
+class="featured-image"
+src="${featured.image}"
+alt="${featured.title}">
+
+`
+
+: `
+
+<div class="featured-image"></div>
+
+`;
+
+
+container.innerHTML = `
+
+<article class="featured-card">
+
+${image}
+
+<div class="featured-content">
+
+<span class="featured-badge">
+⭐ ГОЛОВНА НОВИНА
+</span>
+
+<span class="featured-category">
+${featured.category}
+</span>
+
+<h2>
+${featured.title}
+</h2>
+
+<p>
+${featured.text}
+</p>
+
+<div class="featured-date">
+${featured.created_at}
+</div>
+
+<a
+class="read-more"
+href="/news.html?id=${featured.id}">
+
+Читати повністю →
+
+</a>
+
+</div>
+
+</article>
+
+`;
+
+}
+
+
+function renderNews() {
+
+const newsGrid =
+document.getElementById("newsGrid");
+
+const searchText =
+document
+.getElementById("searchInput")
+.value
+.toLowerCase()
+.trim();
+
+
+renderFeatured(allNews);
+
+
+const filteredNews =
+allNews.filter(item => {
+
+const matchesCategory =
+selectedCategory === "all"
+||
+item.category === selectedCategory;
+
+const matchesSearch =
+!searchText
+||
+item.title.toLowerCase().includes(searchText)
+||
+item.text.toLowerCase().includes(searchText)
+||
+item.category.toLowerCase().includes(searchText);
+
+return matchesCategory && matchesSearch;
+
+});
+
+
+newsGrid.innerHTML = "";
+
+
+if (filteredNews.length === 0) {
+
+newsGrid.innerHTML = `
+
+<div class="empty">
+
+🔎 Новин за вашим запитом не знайдено.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+filteredNews.forEach(item => {
+
+const card =
+document.createElement("article");
+
+card.className =
+"news-card";
+
+
+const image =
+item.image
+
+? `
+
+<img
+class="news-image"
+src="${item.image}"
+alt="${item.title}">
+
+`
+
+: `
+
+<div class="news-image"></div>
+
+`;
+
+
+card.innerHTML = `
+
+${image}
+
+<div class="news-content">
+
+<span class="category-text">
+${item.category}
+</span>
+
+<h3>
+${item.title}
+</h3>
+
+<p>
+${item.text}
+</p>
+
+<div class="news-date">
+${item.created_at}
+</div>
+
+<a
+class="read-more"
+href="/news.html?id=${item.id}">
+
+Читати повністю →
+
+</a>
+
+</div>
+
+`;
+
+newsGrid.appendChild(card);
+
+});
+
+}
+
+
+document
+.getElementById("searchInput")
+.addEventListener(
+"input",
+function() {
+
+renderNews();
+
+}
+);
+
+
+document
+.getElementById("categories")
+.addEventListener(
+"click",
+function(event) {
+
+const button =
+event.target.closest(
+".category-button"
+);
+
+if (!button) {
+return;
+}
+
+selectedCategory =
+button.dataset.category;
+
+
+document
+.querySelectorAll(
+".category-button"
+)
+.forEach(btn => {
+
+btn.classList.remove("active");
+
+});
+
+
+button.classList.add("active");
+
+renderNews();
+
+}
+);
+
+
+loadNews();
+
+</script>
+
+</body>
+</html>
