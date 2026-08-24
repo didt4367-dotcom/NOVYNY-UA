@@ -1,12 +1,18 @@
 const express = require("express");
 const path = require("path");
 const multer = require("multer");
+const crypto = require("crypto");
 
 const db = require("./database");
 const rss = require("./rss");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+const ADMIN_LOGIN = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+const sessions = new Set();
 
 const storage = multer.diskStorage({
 destination: function (req, file, cb) {
@@ -29,7 +35,6 @@ limits: {
 },
 
 fileFilter: function (req, file, cb) {
-
     const allowed = [
         "image/jpeg",
         "image/png",
@@ -47,6 +52,131 @@ fileFilter: function (req, file, cb) {
 });
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+function getSessionToken(req) {
+const cookie = req.headers.cookie || "";
+
+const match = cookie
+    .split(";")
+    .map(item => item.trim())
+    .find(item => item.startsWith("session="));
+
+if (!match) {
+    return null;
+}
+
+return match.substring("session=".length);
+
+}
+
+function isAuthenticated(req) {
+const token = getSessionToken(req);
+
+return token && sessions.has(token);
+
+}
+
+function requireAuth(req, res, next) {
+if (isAuthenticated(req)) {
+return next();
+}
+
+if (req.path.startsWith("/api/")) {
+    return res.status(401).json({
+        error: "Потрібна авторизація"
+    });
+}
+
+return res.redirect("/login.html");
+
+}
+
+app.get("/api/login", function (req, res) {
+res.json({
+authenticated: isAuthenticated(req)
+});
+});
+
+app.post("/api/login", function (req, res) {
+const login = String(req.body.login || "");
+const password = String(req.body.password || "");
+
+if (
+    login !== ADMIN_LOGIN ||
+    password !== ADMIN_PASSWORD
+) {
+    return res.status(401).json({
+        error: "Неправильний логін або пароль"
+    });
+}
+
+const token = crypto.randomBytes(32).toString("hex");
+
+sessions.add(token);
+
+res.setHeader(
+    "Set-Cookie",
+    "session=" + token + "; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400"
+);
+
+res.json({
+    success: true
+});
+
+});
+
+app.post("/api/logout", function (req, res) {
+const token = getSessionToken(req);
+
+if (token) {
+    sessions.delete(token);
+}
+
+res.setHeader(
+    "Set-Cookie",
+    "session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"
+);
+
+res.json({
+    success: true
+});
+
+});
+
+app.get("/admin", function (req, res) {
+if (!isAuthenticated(req)) {
+return res.redirect("/login.html");
+}
+
+res.sendFile(
+    path.join(
+        __dirname,
+        "public",
+        "admin",
+        "index.html"
+    )
+);
+
+});
+
+app.get("/admin/", function (req, res) {
+if (!isAuthenticated(req)) {
+return res.redirect("/login.html");
+}
+
+res.sendFile(
+    path.join(
+        __dirname,
+        "public",
+        "admin",
+        "index.html"
+    )
+);
+
+});
+
+app.use("/admin", requireAuth);
 
 app.use(
 express.static(
@@ -54,37 +184,37 @@ path.join(__dirname, "public")
 )
 );
 
-// =======================================
-// ВСІ НОВИНИ
-// =======================================
+app.get("/", function (req, res) {
+res.sendFile(
+path.join(
+__dirname,
+"public",
+"index.html"
+)
+);
+});
 
 app.get("/api/news", function (req, res) {
-
 const news = db
-    .prepare(
-        "SELECT * FROM news ORDER BY created_at DESC"
-    )
-    .all();
+.prepare(
+"SELECT * FROM news ORDER BY created_at DESC"
+)
+.all();
 
 res.json(news);
 
 });
 
-// =======================================
-// ДОДАТИ НОВИНУ
-// =======================================
-
 app.post(
 "/api/news",
+requireAuth,
 upload.single("image"),
 function (req, res) {
-
-    const title = req.body.title;
-    const category = req.body.category;
-    const text = req.body.text;
+const title = req.body.title;
+const category = req.body.category;
+const text = req.body.text;
 
     if (!title || !category || !text) {
-
         return res.status(400).json({
             error: "Заповніть усі поля"
         });
@@ -118,23 +248,18 @@ function (req, res) {
 
 );
 
-// =======================================
-// РЕДАГУВАТИ НОВИНУ
-// =======================================
-
 app.put(
 "/api/news/",
+requireAuth,
 upload.single("image"),
 function (req, res) {
-
-    const id = req.params.id;
+const id = req.params.id;
 
     const title = req.body.title;
     const category = req.body.category;
     const text = req.body.text;
 
     if (!title || !category || !text) {
-
         return res.status(400).json({
             error: "Заповніть усі поля"
         });
@@ -147,7 +272,6 @@ function (req, res) {
         .get(id);
 
     if (!oldNews) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -180,15 +304,11 @@ function (req, res) {
 
 );
 
-// =======================================
-// ЗРОБИТИ ГОЛОВНОЮ
-// =======================================
-
 app.put(
 "/api/news//featured",
+requireAuth,
 function (req, res) {
-
-    const id = req.params.id;
+const id = req.params.id;
 
     const news = db
         .prepare(
@@ -197,7 +317,6 @@ function (req, res) {
         .get(id);
 
     if (!news) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -222,15 +341,11 @@ function (req, res) {
 
 );
 
-// =======================================
-// ПРИБРАТИ З ГОЛОВНОЇ
-// =======================================
-
 app.delete(
 "/api/news//featured",
+requireAuth,
 function (req, res) {
-
-    const id = req.params.id;
+const id = req.params.id;
 
     const news = db
         .prepare(
@@ -239,7 +354,6 @@ function (req, res) {
         .get(id);
 
     if (!news) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -256,15 +370,11 @@ function (req, res) {
 
 );
 
-// =======================================
-// ВИДАЛИТИ НОВИНУ
-// =======================================
-
 app.delete(
 "/api/news/",
+requireAuth,
 function (req, res) {
-
-    const id = req.params.id;
+const id = req.params.id;
 
     const result = db
         .prepare(
@@ -273,7 +383,6 @@ function (req, res) {
         .run(id);
 
     if (result.changes === 0) {
-
         return res.status(404).json({
             error: "Новину не знайдено"
         });
@@ -286,35 +395,28 @@ function (req, res) {
 
 );
 
-// =======================================
-// ПОМИЛКИ
-// =======================================
+app.use(function (err, req, res, next) {
+console.error(err);
 
-app.use(
-function (err, req, res, next) {
+res.status(400).json({
+    error: err.message || "Помилка сервера"
+});
 
-    console.error(err);
+});
 
-    res.status(400).json({
-        error: err.message || "Помилка сервера"
-    });
-}
-
+app.listen(PORT, function () {
+console.log(
+"НОВИНИ UA запущено на порту " + PORT
 );
 
-// =======================================
-// ЗАПУСК
-// =======================================
-
-app.listen(
-PORT,
-function () {
-
-    console.log(
-        "НОВИНИ UA запущено: http://localhost:" + PORT
-    );
-
-    rss.startRSS();
-}
-
+console.log(
+    "Логін: admin"
 );
+
+console.log(
+    "Пароль: admin123"
+);
+
+rss.startRSS();
+
+});
