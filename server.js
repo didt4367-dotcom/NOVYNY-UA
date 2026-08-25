@@ -4,7 +4,6 @@ const multer = require("multer");
 const crypto = require("crypto");
 
 const db = require("./database");
-const rss = require("./rss");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -417,6 +416,5 @@ console.log(
     "Пароль: admin123"
 );
 
-rss.startRSS();
 
 });
